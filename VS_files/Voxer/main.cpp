@@ -22,7 +22,7 @@ int main( int argc, char *argv[] )
 	AppSettings settings;
 
 	// Zerowanie i konfigurowanie ustawieñ aplikacji
-	ZeroMemory( &settings, sizeof( AppSettings ) );
+	memset( &settings, 0, sizeof( AppSettings ) );
 	settings.fullscreen = 0;
 	settings.src_width  = 0;
 	settings.src_height = 0;

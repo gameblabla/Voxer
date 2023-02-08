@@ -3,6 +3,11 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
+*.o
+*.opk
+*.a
+*.elf
+
 # User-specific files
 *.suo
 *.user
