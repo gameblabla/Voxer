@@ -15,7 +15,7 @@ OBJ_C		= $(notdir $(patsubst %.c, %.o, $(SRC_C)))
 OBJS		= $(OBJ_CP) $(OBJ_C)
 
 CXXFLAGS		= -O0 -g3 -Wall -Wextra -I/opt/gcw0-toolchain/mipsel-gcw0-linux-uclibc/sysroot/usr/include/SDL2 -Wno-write-strings -Isrc -Isrc/include -I. -Iplatform/generic -IVS_files/Voxer -IGLU/include -IGLU/src/include
-CXXFLAGS		+= -DLSB_FIRST -DSDL2 -DHOME_SUPPORT -DFORCE_FULLSCREEN
+CXXFLAGS		+= -DLSB_FIRST -DSDL2 -DHOME_SUPPORT -DFORCE_FULLSCREEN -DOGG_MUSIC
 CXXFLAGS		+= -Ilib3ds
 
 ifeq ($(PROFILE), YES)

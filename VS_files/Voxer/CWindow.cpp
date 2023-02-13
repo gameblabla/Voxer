@@ -7,6 +7,8 @@
 #include "CWindow.h"
 #include "AppSettings.h"
 
+static SDL_Renderer *renderer_game;
+
 // Konstruktor klasy CWindow
 CWindow::CWindow()
 {
@@ -24,6 +26,9 @@ CWindow::~CWindow()
 	// Niszczenie okna
 	if( window )
 		SDL_DestroyWindow( window );
+		
+	if (renderer_game)
+		SDL_DestroyRenderer (renderer_game);
 }
 
 bool CWindow::create( AppSettings &settings )
@@ -65,6 +70,24 @@ bool CWindow::create( AppSettings &settings )
 		window = SDL_CreateWindow(settings.title, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
 			settings.src_width, settings.src_height, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN );
 	}
+	
+	// All of this junk is required on some platforms like the GCW0/RG350
+	// Otherwise black screen
+	SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, 0);
+	SDL_RenderSetLogicalSize(renderer_game, settings.src_width, settings.src_height);
+	
+	renderer_game = SDL_CreateRenderer(window, -1,
+#ifdef NOVSYNC
+	0
+#else
+	SDL_RENDERER_PRESENTVSYNC
+#endif
+	);
+	
+	// Make sure background is black
+	SDL_SetRenderDrawColor(renderer_game, 0, 0, 0, 255);
+	SDL_RenderClear(renderer_game);
+	SDL_RenderPresent(renderer_game);
 	
 	
 	// Ustawianie g³êbi kolorów

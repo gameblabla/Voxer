@@ -62,36 +62,56 @@ bool CGame::init( CApp *App )
 	cursor = new CCursor();
 	if( !cursor ) return false;
 	if( !cursor->load( "System/cursor.obj", "System/cursor1.png", "System/cursor2.png" ) )
+	{
+		SDL_Log("Can't load cursor obj \n");
 		return false;
-
+	}
+	
 	// Inicjalizowanie menu
 	menu = new CMenu();
 	if( !menu ) return false;
-	if( !menu->init( App ) ) return false;
+	if( !menu->init( App ) )
+	{
+		SDL_Log("menu->init error \n");
+		return false;
+	}
 
 	// Inicjalizowanie ingame
 	ingame = new CIngame();
 	if( !ingame ) return false;
-	if( !ingame->init( App ) ) return false;
-
+	if( !ingame->init( App ) )
+	{
+		SDL_Log("ingame->init error \n");
+		return false;
+	}
+	
 	// Inicjalizowanie highscores
 	highscores = new CHighscores();
 	if( !highscores ) return false;
-	if( !highscores->init() ) return false;
-
+	if( !highscores->init() ) 	{
+		SDL_Log("highscores->init error \n");
+		return false;
+	}
+	
 	// Inicjalizowanie author
 	author = new CAuthor();
 	if( !author ) return false;
-	if( !author->init( this ) ) return false;
-
+	if( !author->init( this ) ) 	{
+		SDL_Log("author->init error \n");
+		return false;
+	}
+	
 	app = App; // Kopiowanie wskaŸnika do obiektu nadrzêdnego
 
 	// Wczytywanie muzyki
+#ifdef OGG_MUSIC
+	music = Mix_LoadMUS( "Music/music.ogg" );
+#else
 	music = Mix_LoadMUS( "Music/Finding the Balance.mp3" );
+#endif
 	if( !music )
 	{
-		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, 
-			"Initializing Error","Cannot load Finding the Balance.mp3", NULL);
+		SDL_Log("Cannot load Music file, missing decoder in SDL_mixer?\n");
 		return false;
 	}
 	Mix_PlayMusic( music, -1 ); // Odtwarzanie muzyki - w nieskoñczonoœæ
