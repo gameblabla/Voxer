@@ -10,6 +10,8 @@
 #include "CMesh.h"
 #include "CButton.h"
 
+char home_highscores[128];
+
 CHighscores::CHighscores()
 {
 	background = NULL;
@@ -33,6 +35,29 @@ CHighscores::~CHighscores()
 
 bool CHighscores::init()
 {
+#ifdef HOME_SUPPORT
+	char home_config[128];
+	FILE* file_ptr;
+	
+	snprintf(home_config, sizeof(home_highscores), "%s/.config", getenv("HOME"));
+	snprintf(home_highscores, sizeof(home_highscores), "%s/.config/voxer/", getenv("HOME"));
+
+	if(access( home_config, F_OK ) == -1)  mkdir(home_config, 0755);
+	if(access( home_highscores, F_OK ) == -1)  mkdir(home_highscores, 0755);
+	
+	snprintf(home_highscores, sizeof(home_highscores), "%s/.config/voxer/highscores.txt", getenv("HOME"));
+	
+	// File doesn't exist, create it
+	if (access(home_highscores, F_OK) != 0) {
+		file_ptr = fopen(home_highscores, "w");
+		fclose(file_ptr);
+	}
+
+	
+#else
+	snprintf(home_highscores, sizeof(home_highscores), "Highscores/highscores.txt");
+#endif
+	
 	// Wczytywanie t³a
 	background = new CMesh();
 	if( !background )
@@ -103,12 +128,12 @@ bool CHighscores::refresh()
 		score_txt[i] = -1;
 		name_txt[i].clear();
 	}
-
-	std::ifstream file( "Highscores/highscores.txt" ); // Otwieranie pliku
+	
+	std::ifstream file( home_highscores ); // Otwieranie pliku
 	if( !file )
 	{
 		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, 
-			"Data loading error...", "Highscores/highscores.txt", NULL);
+			"Data loading error...", home_highscores, NULL);
 		return false;
 	}
 
@@ -164,7 +189,7 @@ bool CHighscores::refresh()
 
 	if(file_damaged)
 		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, 
-			"Data loading error...", "Highscores/highscores.txt - file damaged", NULL);
+			"Data loading error... File damaged", home_highscores, NULL);
 
 	file.close();
 

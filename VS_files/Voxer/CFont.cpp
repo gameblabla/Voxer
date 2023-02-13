@@ -50,8 +50,7 @@ CFont::~CFont()
 // Wyœwietlanie tekstu [tekst, kolor, wyrównanie, wysokoœci, wspó³czynnik szerokoœci, pozycja x, y, z]
 void CFont::RenderText( const char * text, SDL_Color color, FontAlign align, double height, double width_ratio, double x, double y, double z )
 {
-	// Zmiana tekstury z tekstem w wypadku zmiany tekstu lub braku tej tekstury
-	if( strcmp( text, current_text.c_str() ) != 0 || text_surface == 0 )
+    if( strcmp( text, current_text.c_str() ) != 0 || text_surface == 0 )
 	{
 		// Ustawienie aktualnego tesktu
 		current_text.assign( text );
@@ -62,6 +61,10 @@ void CFont::RenderText( const char * text, SDL_Color color, FontAlign align, dou
 		text_surface = TTF_RenderText_Blended( font, current_text.c_str(), color );
 		if( !text_surface )
 			return;
+			
+		SDL_Surface* formatted_surface = SDL_ConvertSurfaceFormat(text_surface, SDL_PIXELFORMAT_ARGB8888, 0);
+		SDL_FreeSurface(text_surface);
+		text_surface = formatted_surface;
 		
 		if( texture )
 			glDeleteTextures( 1, &texture );
@@ -72,11 +75,14 @@ void CFont::RenderText( const char * text, SDL_Color color, FontAlign align, dou
 
 		glBindTexture(GL_TEXTURE_2D, texture);
 	
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		
+		glPixelStorei(GL_UNPACK_ROW_LENGTH, text_surface->pitch / text_surface->format->BytesPerPixel);
 	
-		glTexImage2D(GL_TEXTURE_2D, 0, 4, text_surface->w, text_surface->h, 
-				0, GL_BGRA, GL_UNSIGNED_BYTE, text_surface->pixels);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, text_surface->w, text_surface->h,  0, GL_BGRA, GL_UNSIGNED_BYTE, text_surface->pixels);
 	}
 	
 	// Ustawianie tekstury
@@ -120,5 +126,4 @@ void CFont::RenderText( const char * text, SDL_Color color, FontAlign align, dou
 		}
 		glDisable(GL_TEXTURE_2D);
 	glPopMatrix();
-	
 }

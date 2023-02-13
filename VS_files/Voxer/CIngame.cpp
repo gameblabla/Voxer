@@ -103,7 +103,7 @@ bool CIngame::init( CApp *App)
 	// Wczytywanie modelu pocisku
 	BulletMesh = new CMesh();
 	if( !BulletMesh ) return false;
-	if( !BulletMesh->Load( "Ingame/Graphic/Bullet.obj", "Ingame/Graphic/Bullet.png" ) )
+	if( !BulletMesh->Load( "Ingame/Graphic/bullet.obj", "Ingame/Graphic/bullet.png" ) )
 		return false;
 	BulletMesh->z = 0.0975;
 

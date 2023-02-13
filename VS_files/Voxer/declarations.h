@@ -7,7 +7,7 @@
 #include <SDL_image.h>
 #include <SDL_mixer.h>
 #include <SDL_ttf.h>
-#include <gl\glu.h>
+#include "GL/glu.h"
 
 // Nag³ówki Standardowej Biblioteki C++
 #include <iostream>
@@ -16,5 +16,12 @@
 #include <vector>
 #include <string>
 #include <math.h>
+
+#ifdef HOME_SUPPORT
+// HOME
+#include <unistd.h>
+#include <sys/stat.h>
+#include <errno.h>
+#endif
 
 #endif

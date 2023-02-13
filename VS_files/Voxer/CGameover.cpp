@@ -8,6 +8,7 @@
 #include "CMesh.h"
 #include "CButton.h"
 #include "CIngame.h"
+#include "CHighscores.h"
 
 CGameover::CGameover()
 {
@@ -58,11 +59,11 @@ bool CGameover::logic( CCursor *cursor )
 	if( close->Logic( cursor ) && name.size() != 0 )
 	{
 		// Otwórz plik i ustaw kursor na jego koñcu
-		std::fstream file( "Highscores/highscores.txt", std::ios::out | std::ios::app );
+		std::fstream file( home_highscores, std::ios::out | std::ios::app );
 		if( !file )
 		{
 			SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, 
-				"Data loading error...", "Highscores/highscores.txt", NULL);
+				"Data loading error...", home_highscores, NULL);
 			return false;
 		}
 

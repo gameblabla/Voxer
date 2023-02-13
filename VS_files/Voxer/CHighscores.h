@@ -16,6 +16,8 @@ class CCursor;
 class CButton;
 class CMesh;
 
+extern char home_highscores[128];
+
 class CHighscores
 {
 private:
