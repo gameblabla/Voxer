@@ -51,6 +51,7 @@ bool CLogic::check_events()
 			return true;	// Zamykanie programu
 		}
 
+		#ifdef NO_TEXT_INPUT
 		// Wprowadzanie tekstu
 		if( ev.type == SDL_TEXTINPUT )
 		{
@@ -63,6 +64,7 @@ bool CLogic::check_events()
 					app->game->ingame->gameover->name.resize(16);
 			}
 		}
+		#endif
 
 		// Wciœniêcie przycisku
 		if( ev.type == SDL_KEYDOWN )
@@ -93,9 +95,18 @@ bool CLogic::check_events()
 					break;
 
 				case SDLK_BACKSPACE:
+					#ifdef NO_TEXT_INPUT
+					// Jeœli status gry to GAMEOVER i nazwa gracza ma wiêcej ni¿ 0 liter to usuñ 1 literê
+					if( app->game->game_status == GAMEOVER && app->game->ingame->gameover->name.size() > 0)
+					{
+						app->game->ingame->gameover->name.resize(16);
+						app->game->ingame->gameover->name = "DEFAULT";
+					}
+					#else
 					// Jeœli status gry to GAMEOVER i nazwa gracza ma wiêcej ni¿ 0 liter to usuñ 1 literê
 					if( app->game->game_status == GAMEOVER && app->game->ingame->gameover->name.size() > 0)
 						app->game->ingame->gameover->name.pop_back();
+					#endif
 					break;
 
 				case SDLK_p:

@@ -53,6 +53,19 @@ bool CWindow::create( AppSettings &settings )
 			settings.src_width =  4/3 * mode.h;			
 		}
 	}
+
+	// Tworzenie okna w trybie pe³noekranowym lub okienowym
+	if( settings.fullscreen )
+	{
+		window = SDL_CreateWindow(settings.title, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
+			settings.src_width, settings.src_height, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_FULLSCREEN );
+	}
+	else
+	{
+		window = SDL_CreateWindow(settings.title, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
+			settings.src_width, settings.src_height, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN );
+	}
+	
 	
 	// Ustawianie g³êbi kolorów
 	SDL_GL_SetAttribute( SDL_GL_RED_SIZE, 8 );
@@ -68,26 +81,24 @@ bool CWindow::create( AppSettings &settings )
 	// Ustawienie multisamplingu
 	SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
 	SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, settings.MultiSampleSamples);
-
-	// Tworzenie okna w trybie pe³noekranowym lub okienowym
-	if( settings.fullscreen )
-	{
-		window = SDL_CreateWindow(settings.title, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-			settings.src_width, settings.src_height, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_FULLSCREEN );
-	}
-	else
-	{
-		window = SDL_CreateWindow(settings.title, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-			settings.src_width, settings.src_height, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN );
-	}
+	
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_COMPATIBILITY);
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 1);
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 5);
 
 	if(!window)
+	{
+		SDL_Log("Can't create SDL Window\n");
 		return false;
+	}
 	
 	// Tworzenie kontekstu OpenGL dla okna
     context = SDL_GL_CreateContext( window );
     if( !context )
+    {
+		SDL_Log("Can't create OpenGL context\n");
 		return false;
+	}
 	
 	// Ustawienie synchronizacji pionowej
 	SDL_GL_SetSwapInterval(1);

@@ -57,17 +57,16 @@ bool CApp::init( AppSettings settings )
 	// Inicjalizowanie biblioteki SDL
 	if( SDL_Init( SDL_INIT_EVERYTHING ) < 0 )
 	{
-		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, 
-			"Initializing Error (SDL_Init)", SDL_GetError(), NULL);
-
+		/*SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, 
+			"Initializing Error (SDL_Init)", SDL_GetError(), NULL);*/
+		SDL_Log("Initializing Error (SDL_Init)\n");
 		return false;
 	}
 
 	// W³¹czanie miksera dŸwiêków
 	if( Mix_OpenAudio( 44100, MIX_DEFAULT_FORMAT, 2, 1024 ) == -1 )
 	{
-		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, 
-			"Initializing Error","Mix_OpenAudio failed", NULL);
+		SDL_Log("Initializing Error","Mix_OpenAudio failed\n");
 		return false;
 	}
 
@@ -86,8 +85,7 @@ bool CApp::init( AppSettings settings )
 	// Tworzenie okna
 	if( !window->create( settings ) )
 	{
-		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, 
-			"Initializing Error (window->create)", SDL_GetError(), NULL);
+		SDL_Log("Initializing Error (window->create)\n");
 		return false;
 	}
 
@@ -110,21 +108,22 @@ bool CApp::init( AppSettings settings )
 	if( !game ) return false;
 	if( !game->init( this ) )
 	{
-		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, 
-			"Initializing Error","(game->init)", NULL);
+		SDL_Log("Initializing Error (game->init)\n");
 		return false;
 	}
 
 	// Ustawianie trybu relatywnego myszki (przechwytywanie ruchów myszki)
 	if( SDL_SetRelativeMouseMode( SDL_TRUE ) != 0 )
 	{
-		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, 
-			"Initializing Error","Cannot set Relative Mouse Mode.", NULL);
+		SDL_Log("Cannot set Relative Mouse Mode\n");
 		return false;
 	}
 	
+	#ifdef NO_TEXT_INPUT
 	// Rozpoczêcie wprowadzania tekstu
 	SDL_StartTextInput();
+	#endif
+	
 	return true;
 }
 

@@ -23,7 +23,11 @@ int main( int argc, char *argv[] )
 
 	// Zerowanie i konfigurowanie ustawieñ aplikacji
 	memset( &settings, 0, sizeof( AppSettings ) );
+#ifdef FORCE_FULLSCREEN
+	settings.fullscreen = 1;
+#else
 	settings.fullscreen = 0;
+#endif
 	settings.src_width  = 0;
 	settings.src_height = 0;
 	settings.MultiSampleSamples = 4;
